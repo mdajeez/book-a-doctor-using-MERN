@@ -7,6 +7,7 @@ export default function Register() {
   const [patientInfo, setPatientInfo] = useState({ age: '', gender: 'male' });
   const [doctorInfo, setDoctorInfo] = useState({ specialization: '', yearsOfExperience: '', availableHours: '', chargePerHour: '' });
   const [errors, setErrors] = useState({});
+  const [serverError, setServerError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const nameRef = useRef(null);
@@ -37,6 +38,7 @@ export default function Register() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setServerError('');
     if (!validate()) return;
     setLoading(true);
     try {
@@ -48,7 +50,7 @@ export default function Register() {
       alert('Registered successfully — wait for approval if you registered as a doctor');
       navigate('/login');
     } catch (err) {
-      alert(err.response?.data?.message || 'Registration failed');
+      setServerError(err.response?.data?.message || 'Registration failed');
     } finally {
       setLoading(false);
     }
@@ -70,6 +72,7 @@ export default function Register() {
   return (
     <div style={styles.page}>
       <form style={styles.card} onSubmit={handleSubmit} aria-labelledby="register-title">
+        {serverError && <div style={{ ...styles.error, marginBottom: 10 }}>{serverError}</div>}
         <div style={{ marginBottom: 12 }}>
           <h1 id="register-title" style={styles.title}>Create your account</h1>
           <p style={styles.subtitle}>Register as a patient or doctor to start using the booking app.</p>

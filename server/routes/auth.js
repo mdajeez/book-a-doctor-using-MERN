@@ -109,47 +109,59 @@ router.post('/admin/login', async (req, res) => {
 
 // Register patient or doctor
 router.post('/register', async (req, res) => {
-  const { name, email, password, role, patientInfo, doctorInfo } = req.body;
-  if (!['patient', 'doctor'].includes(role)) {
-    return res.status(400).json({ message: 'Invalid role' });
-  }
-
-  const existing = await User.findOne({ email });
-  if (existing) return res.status(400).json({ message: 'Email already exists' });
-
-  // Basic server-side validation for role-specific fields
-  if (role === 'patient') {
-    if (!patientInfo || typeof patientInfo.age !== 'number' || !patientInfo.gender) {
-      return res.status(400).json({ message: 'Patient age and gender are required' });
+  try {
+    const { name, email, password, role, patientInfo, doctorInfo } = req.body;
+    console.log('[REGISTER] Incoming:', { name, email, role, patientInfo, doctorInfo });
+    if (!['patient', 'doctor'].includes(role)) {
+      console.error('[REGISTER] Invalid role:', role);
+      return res.status(400).json({ message: 'Invalid role' });
     }
-  }
-  if (role === 'doctor') {
-    if (!doctorInfo || !doctorInfo.specialization || typeof doctorInfo.yearsOfExperience !== 'number' || typeof doctorInfo.chargePerHour !== 'number') {
-      return res.status(400).json({ message: 'Doctor specialization, yearsOfExperience and chargePerHour are required' });
+
+    const existing = await User.findOne({ email });
+    if (existing) {
+      console.error('[REGISTER] Email already exists:', email);
+      return res.status(400).json({ message: 'Email already exists' });
     }
+
+    // Basic server-side validation for role-specific fields
+    if (role === 'patient') {
+      if (!patientInfo || typeof patientInfo.age !== 'number' || !patientInfo.gender) {
+        console.error('[REGISTER] Invalid patient info:', patientInfo);
+        return res.status(400).json({ message: 'Patient age and gender are required' });
+      }
+    }
+    if (role === 'doctor') {
+      if (!doctorInfo || !doctorInfo.specialization || typeof doctorInfo.yearsOfExperience !== 'number' || typeof doctorInfo.chargePerHour !== 'number') {
+        console.error('[REGISTER] Invalid doctor info:', doctorInfo);
+        return res.status(400).json({ message: 'Doctor specialization, yearsOfExperience and chargePerHour are required' });
+      }
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const status = role === 'doctor' ? 'pending_approval' : 'active';
+
+    const toCreate = {
+      name,
+      email,
+      password: hashedPassword,
+      role,
+      status
+    };
+
+    if (role === 'patient') toCreate.patientInfo = patientInfo;
+    if (role === 'doctor') toCreate.doctorInfo = doctorInfo;
+
+    const newUser = await User.create(toCreate);
+
+    // set httpOnly cookie instead of sending token in json
+    const token = setTokenCookie(res, { id: newUser._id, role: newUser.role });
+    const responseBody = { message: 'User registered successfully', user: { id: newUser._id, name: newUser.name, email: newUser.email, role: newUser.role, status: newUser.status, patientInfo: newUser.patientInfo, doctorInfo: newUser.doctorInfo } };
+    if (process.env.NODE_ENV !== 'production') responseBody.token = token;
+    res.status(201).json(responseBody);
+  } catch (err) {
+    console.error('[REGISTER] Unexpected error:', err);
+    res.status(500).json({ message: 'Registration failed: ' + (err.message || 'Unknown error') });
   }
-
-  const hashedPassword = await bcrypt.hash(password, 10);
-  const status = role === 'doctor' ? 'pending_approval' : 'active';
-
-  const toCreate = {
-    name,
-    email,
-    password: hashedPassword,
-    role,
-    status
-  };
-
-  if (role === 'patient') toCreate.patientInfo = patientInfo;
-  if (role === 'doctor') toCreate.doctorInfo = doctorInfo;
-
-  const newUser = await User.create(toCreate);
-
-  // set httpOnly cookie instead of sending token in json
-  const token = setTokenCookie(res, { id: newUser._id, role: newUser.role });
-  const responseBody = { message: 'User registered successfully', user: { id: newUser._id, name: newUser.name, email: newUser.email, role: newUser.role, status: newUser.status, patientInfo: newUser.patientInfo, doctorInfo: newUser.doctorInfo } };
-  if (process.env.NODE_ENV !== 'production') responseBody.token = token;
-  res.status(201).json(responseBody);
 });
 
 // Login patient or doctor

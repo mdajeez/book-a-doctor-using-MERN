@@ -1,4 +1,4 @@
-# Doctor Appointment Website (MERN)
+# HealthEase Portal (MERN)
 
 ## Overview
 This project is a full-stack web application for booking doctor appointments, built using the MERN stack (MongoDB, Express.js, React, Node.js). It provides a modern, clean, and user-friendly interface for patients and doctors to manage appointments, profiles, and more.
@@ -51,4 +51,4 @@ book-a-doctor-using-mern/
 This project is open source and free to use for educational and personal purposes.
 
 ---
-Developed and Designed by Rajesh
+Developed and Designed by Ajeez Mahammad

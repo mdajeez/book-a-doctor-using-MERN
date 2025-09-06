@@ -57,79 +57,105 @@ export default function Login() {
   };
 
   const styles = {
-    page: { minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg,#f6f8ff,#fff7ed)' },
-    card: { width: 420, maxWidth: '95%', padding: 26, borderRadius: 12, boxShadow: '0 10px 30px rgba(16,24,40,0.08)', background: '#fff' },
-    title: { margin: 0, fontSize: 20, fontWeight: 700, color: '#0f172a' },
-    subtitle: { marginTop: 6, marginBottom: 14, color: '#475569', fontSize: 13 },
-    field: { display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 12 },
-    input: { height: 44, padding: '0 12px', borderRadius: 8, border: '1px solid #e6eef8', fontSize: 14, background: '#fbfdff' },
-    submit: (disabled) => ({ marginTop: 8, width: '100%', padding: '12px 14px', borderRadius: 10, border: 'none', color: '#fff', fontWeight: 700, cursor: disabled ? 'not-allowed' : 'pointer', background: disabled ? 'linear-gradient(90deg,#94a3b8,#cbd5e1)' : 'linear-gradient(90deg,#06b6d4,#0891b2)' }),
-    error: { color: '#b91c1c', fontSize: 13 }
+    page: {
+      minHeight: '100vh',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      background: 'linear-gradient(120deg, #a78bfa 0%, #14b8a6 100%)',
+    },
+    card: {
+      background: 'rgba(248,250,252,0.85)',
+      boxShadow: '0 8px 32px 0 rgba(31,38,135,0.15)',
+      borderRadius: '20px',
+      padding: '40px 32px',
+      width: '100%',
+      maxWidth: '400px',
+      backdropFilter: 'blur(8px)',
+      WebkitBackdropFilter: 'blur(8px)',
+      border: '1px solid rgba(255,255,255,0.18)',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+    },
+    title: {
+      fontSize: '2rem',
+      fontWeight: 700,
+      color: '#7c3aed',
+      marginBottom: '8px',
+      letterSpacing: '1px',
+      textAlign: 'center',
+    },
+    subtitle: {
+      fontSize: '1rem',
+      color: '#0d9488',
+      marginBottom: '24px',
+      textAlign: 'center',
+    },
+    input: {
+      width: '100%',
+      padding: '12px',
+      marginBottom: '16px',
+      borderRadius: '10px',
+      border: '1px solid #c4b5fd',
+      fontSize: '1rem',
+      background: '#f5f3ff',
+      color: '#312e81',
+      outline: 'none',
+      transition: 'border 0.2s',
+    },
+    button: {
+      width: '100%',
+      padding: '12px',
+      borderRadius: '10px',
+      background: 'linear-gradient(90deg,#7c3aed,#14b8a6)',
+      color: '#fff',
+      fontWeight: 600,
+      fontSize: '1rem',
+      border: 'none',
+      cursor: 'pointer',
+      marginTop: '8px',
+      boxShadow: '0 2px 8px rgba(31,38,135,0.10)',
+      transition: 'background 0.2s',
+    },
+    error: {
+      color: '#ef4444',
+      marginBottom: '12px',
+      textAlign: 'center',
+    },
+    link: {
+      color: '#7c3aed',
+      textDecoration: 'underline',
+      cursor: 'pointer',
+      marginTop: '12px',
+      fontSize: '0.95rem',
+      textAlign: 'center',
+    },
   };
-
+  
+  
   return (
     <div style={styles.page}>
-      <form style={styles.card} onSubmit={handleSubmit} aria-labelledby="login-title">
-        <div>
-          <h2 id="login-title" style={styles.title}>Sign in</h2>
-          <p style={styles.subtitle}>Sign in to access your dashboard and manage appointments.</p>
-        </div>
-
-        <div style={styles.field}>
-          <label style={{ fontSize: 13, color: '#334155' }} htmlFor="email">Email</label>
-          <input ref={emailRef} id="email" name="email" value={form.email} onChange={handleChange} style={styles.input} placeholder="you@example.com" />
-        </div>
-
-        <div style={styles.field}>
-          <label style={{ fontSize: 13, color: '#334155' }} htmlFor="password">Password</label>
-          <div style={{ display: 'flex', gap: 8 }}>
-            <input id="password" name="password" value={form.password} onChange={handleChange} type={showPassword ? 'text' : 'password'} style={{ ...styles.input, flex: 1 }} placeholder="Your password" />
-            <button type="button" aria-label={showPassword ? 'Hide password' : 'Show password'} onClick={() => setShowPassword((s) => !s)} style={{ padding: '0 12px', borderRadius: 8, border: '1px solid #e6eef8', background: '#fff', cursor: 'pointer' }}>{showPassword ? 'Hide' : 'Show'}</button>
-          </div>
-        </div>
-
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
-          <label style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <input type="checkbox" name="remember" checked={form.remember} onChange={handleChange} /> <span style={{ fontSize: 13, color: '#475569' }}>Remember me</span>
-          </label>
-          <button type="button" style={{ background: 'none', border: 'none', color: '#2563eb', cursor: 'pointer' }} onClick={() => navigate('/forgot-password')}>Forgot?</button>
-        </div>
-
+      <form style={styles.card} onSubmit={handleSubmit}>
+        <div style={styles.title}>Welcome Back</div>
+        <div style={styles.subtitle}>Sign in to your HealthEase Portal account</div>
         {error && <div style={styles.error}>{error}</div>}
-
-        <button type="submit" disabled={loading} style={styles.submit(loading)}>{loading ? 'Signing in...' : 'Sign in'}</button>
-
-        <div style={{ marginTop: 12, fontSize: 13, color: '#475569' }}>
-          Don't have an account? <button type="button" onClick={() => navigate('/register')} style={{ color: '#2563eb', background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}>Register</button>
+        <input ref={emailRef} style={styles.input} type="email" name="email" placeholder="Email" value={form.email} onChange={handleChange} autoComplete="username" />
+        <div style={{ position: 'relative', width: '100%' }}>
+          <input style={{ ...styles.input, paddingRight: 40 }} type={showPassword ? 'text' : 'password'} name="password" placeholder="Password" value={form.password} onChange={handleChange} autoComplete="current-password" />
+          <button type="button" style={{ position: 'absolute', right: 12, top: 10, background: 'none', border: 'none', cursor: 'pointer', color: '#7c3aed', fontSize: 18 }} onClick={() => setShowPassword((s) => !s)}>
+            {showPassword ? '🙈' : '👁️'}
+          </button>
         </div>
-        
-        <div style={{ marginTop: 16, textAlign: 'center', padding: '16px', background: '#f8fafc', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-          <p style={{ margin: '0 0 12px 0', fontSize: '14px', color: '#64748b' }}>
-            Are you an administrator?
-          </p>
-          <button 
-            type="button" 
-            onClick={() => navigate('/admin-login')}
-            style={{
-              background: 'none',
-              border: '1px solid #cbd5e1',
-              color: '#475569',
-              padding: '8px 16px',
-              borderRadius: '6px',
-              cursor: 'pointer',
-              fontSize: '13px',
-              fontWeight: '500',
-              transition: 'all 0.2s ease'
-            }}
-            onMouseOver={(e) => {
-              e.target.style.background = '#f1f5f9';
-              e.target.style.borderColor = '#94a3b8';
-            }}
-            onMouseOut={(e) => {
-              e.target.style.background = 'none';
-              e.target.style.borderColor = '#cbd5e1';
-            }}
-          >
+        <label style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: 8, width: '100%' }}>
+          <input type="checkbox" name="remember" checked={form.remember} onChange={handleChange} style={{ accentColor: '#7c3aed', width: 18, height: 18, margin: 0 }} />
+          <span style={{ fontSize: 15, color: '#6b7280', fontWeight: 500, letterSpacing: '0.2px' }}>Remember me</span>
+        </label>
+        <button type="submit" style={styles.button} disabled={loading}>{loading ? 'Signing in...' : 'Login'}</button>
+        <span style={styles.link} onClick={() => navigate('/forgot-password')}>Forgot password?</span>
+        <span style={styles.link} onClick={() => navigate('/register')}>Create account</span>
+        <div style={{ marginTop: 18, textAlign: 'center' }}>
+          <button type="button" onClick={() => navigate('/admin-login')} style={{ background: 'none', border: '1px solid #7c3aed', color: '#7c3aed', padding: '8px 18px', borderRadius: '8px', fontWeight: 600, cursor: 'pointer', fontSize: '1rem', marginTop: '8px' }}>
             Admin Login
           </button>
         </div>
